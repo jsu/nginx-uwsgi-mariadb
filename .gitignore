@@ -1,0 +1,11 @@
+# Python virtual environment
+.env
+
+#
+docker-compose.yml
+
+# Keep the folder but not log files
+nginx/logs/*
+
+# White List
+!.gitkeep

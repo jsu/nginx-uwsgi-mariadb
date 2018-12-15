@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+    mariadb:
+        image: mariadb
+        volumes:
+            - db_data:/var/lib/mysql
+              #- ./mariadb/blog.sql:/docker-entrypoint-initdb.d/blog.sql
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: '1'
+            MYSQL_DATABASE: flask-development
+            MYSQL_USER: flask-development
+            MYSQL_PASSWORD: flask-development
+
+    app:
+        build: ./app/
+        depends_on:
+            - mariadb
+        environment:
+            DB_HOST: mariadb
+            DB_NAME: flask-development
+            DB_USER: flask-development
+            DB_PASS: flask-development
+        volumes:
+            - ./app:/usr/src/app
+
+    nginx:
+        image: nginx:alpine
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./nginx/logs:/var/log/nginx
+        depends_on:
+            - app
+        links:
+            - app
+
+volumes:
+    db_data:
