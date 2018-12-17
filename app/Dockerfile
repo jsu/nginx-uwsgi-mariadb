@@ -1,8 +1,9 @@
 FROM python:alpine
 WORKDIR /usr/src/app
 COPY requirements.txt ./
-RUN apk update && apk upgrade; \
-    apk add --no-cache mariadb-connector-c-dev uwsgi-python3; \
-    apk add --no-cache --virtual .build-deps build-base mysql-client; \
-    pip install --no-cache-dir -r requirements.txt; \
-    apk del .build-deps
+RUN apk update && apk upgrade
+RUN apk add --no-cache mariadb-connector-c-dev
+RUN apk add --no-cache --virtual .build-deps build-base linux-headers mysql-client
+RUN python -m venv .env
+RUN .env/bin/pip install --no-cache-dir -r requirements.txt
+RUN apk del .build-deps
